@@ -43,10 +43,9 @@ app.post("/motobikes", async (c) => {
     name: body.name,
   };
 
-  motobikes  = [...motobikes, newMotobike];
+  motobikes = [...motobikes, newMotobike];
 
-
-  return c.json({ motobike : newMotobike });
+  return c.json({ motobike: newMotobike });
 });
 
 export default app;
