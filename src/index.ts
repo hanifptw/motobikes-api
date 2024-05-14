@@ -48,4 +48,67 @@ app.post("/motobikes", async (c) => {
   return c.json({ motobike: newMotobike });
 });
 
+app.delete("/motobikes", (c) => {
+  motobikes = [];
+
+  return c.json({ motobikes });
+});
+
+app.post("/motobikes/seeds", (c) => {
+  motobikes = dataMotobikes;
+
+  return c.json({ motobikes });
+});
+
+app.delete("/motobikes/:id", (c) => {
+  const id = Number(c.req.param("id"));
+  const motobike = motobikes.find((motobikes) => motobikes.id == id);
+
+  if (!motobike) {
+    c.status(404);
+    return c.json({ message: "Motobikes Not Found" });
+  }
+
+  motobikes = motobikes.filter((motobikes) => motobikes.id !== id);
+
+  return c.json(`motobikes number ${id} id deleted`);
+});
+
+app.put("/motobikes/:id", async (c) => {
+  const id = Number(c.req.param("id"));
+  const motobike = motobikes.find((motobikes) => motobikes.id == id);
+
+  if (!motobike) {
+    c.status(404);
+    return c.json({ message: "Motobikes Not Found" });
+  }
+
+  const body = await c.req.json();
+
+  const newMotobike = {
+    id: motobike.id,
+    name: body.name || motobike.id,
+    merk: body.merk || motobike.merk,
+    cc: body.cc || motobike.cc,
+    type: body.type || motobike.type,
+    transmission: body.transmission || motobike.transmission,
+    price: body.price || motobike.price,
+  };
+
+  const updatedMotobikes = motobikes.map((motobike) => {
+    if (id == motobike.id) {
+      return newMotobike;
+    } else {
+      return motobike;
+    }
+  });
+
+  motobikes = updatedMotobikes;
+
+  return c.json({
+    mesage: `updated motobike with id ${id}`,
+    motobikes: updatedMotobikes,
+  });
+});
+
 export default app;
