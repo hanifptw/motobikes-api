@@ -107,7 +107,7 @@ app.put("/motobikes/:id", async (c) => {
 
   return c.json({
     mesage: `updated motobike with id ${id}`,
-    motobikes: updatedMotobikes,
+    motobikes: newMotobike,
   });
 });
 
