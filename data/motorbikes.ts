@@ -1,4 +1,4 @@
-type Motobikes = {
+type Motorbikes = {
   id: number;
   name: string;
   merk?: string;
@@ -8,7 +8,7 @@ type Motobikes = {
   price?: number;
 };
 
-export const dataMotobikes: Motobikes[] = [
+export const dataMotorbikes: Motorbikes[] = [
   {
     id: 1,
     name: "Honda Goldwing",

@@ -1,113 +1,113 @@
 import { Hono } from "hono";
 
-import { dataMotobikes } from "../data/mobobikes";
+import { dataMotorbikes } from "../data/motorbikes";
 
-let motobikes = dataMotobikes;
+let motorbikes = dataMotorbikes;
 
 const app = new Hono();
 
-// | `/motobikes`     | `GET`    | `Get all motobikes`      |
-// | `/motobikes/:id` | `GET`    | `Get motobikes by id`    |
-// | `/motobikes`     | `POST`   | `add new motobike`       |
-// | `/motobikes`     | `DELETE` | `Delete all motobikes`   |
-// | `/motobikes/:id` | `DELETE` | `Delete motobikes by id` |
-// | `/motobikes/:id` | `PUT`    | `Update motobikes by id` |
+// | `/motorbikes`     | `GET`    | `Get all motorbikes`      |
+// | `/motorbikes/:id` | `GET`    | `Get motorbikes by id`    |
+// | `/motorbikes`     | `POST`   | `add new motorbike`       |
+// | `/motorbikes`     | `DELETE` | `Delete all motorbikes`   |
+// | `/motorbikes/:id` | `DELETE` | `Delete motorbikes by id` |
+// | `/motorbikes/:id` | `PUT`    | `Update motorbikes by id` |
 
 app.get("/", (c) => {
-  return c.text("Hello Hono!");
+  return c.text("Database Motorbikes!");
 });
 
-app.get("/motobikes", (c) => {
-  return c.json(motobikes);
+app.get("/motorbikes", (c) => {
+  return c.json(motorbikes);
 });
 
-app.get("/motobikes/:id", (c) => {
+app.get("/motorbikes/:id", (c) => {
   const id = Number(c.req.param("id"));
-  const motobike = motobikes.find((motobikes) => motobikes.id == id);
+  const motorbike = motorbikes.find((motorbikes) => motorbikes.id == id);
 
-  if (!motobike) {
+  if (!motorbike) {
     c.status(404);
-    return c.json({ message: "Motobikes Not Found" });
+    return c.json({ message: "Motorbikes Not Found" });
   }
 
-  return c.json(motobike);
+  return c.json(motorbike);
 });
 
-app.post("/motobikes", async (c) => {
+app.post("/motorbikes", async (c) => {
   const body = await c.req.json();
 
-  const nextId = motobikes[motobikes.length - 1].id + 1;
+  const nextId = motorbikes[motorbikes.length - 1].id + 1;
 
-  const newMotobike = {
+  const newMotorbike = {
     id: nextId,
     name: body.name,
   };
 
-  motobikes = [...motobikes, newMotobike];
+  motorbikes = [...motorbikes, newMotorbike];
 
-  return c.json({ motobike: newMotobike });
+  return c.json({ motorbike: newMotorbike });
 });
 
-app.delete("/motobikes", (c) => {
-  motobikes = [];
+app.delete("/motorbikes", (c) => {
+  motorbikes = [];
 
-  return c.json({ motobikes });
+  return c.json({ motorbikes });
 });
 
-app.post("/motobikes/seeds", (c) => {
-  motobikes = dataMotobikes;
+app.post("/motorbikes/seeds", (c) => {
+  motorbikes = dataMotorbikes;
 
-  return c.json({ motobikes });
+  return c.json({ motorbikes });
 });
 
-app.delete("/motobikes/:id", (c) => {
+app.delete("/motorbikes/:id", (c) => {
   const id = Number(c.req.param("id"));
-  const motobike = motobikes.find((motobikes) => motobikes.id == id);
+  const motorbike = motorbikes.find((motorbikes) => motorbikes.id == id);
 
-  if (!motobike) {
+  if (!motorbike) {
     c.status(404);
-    return c.json({ message: "Motobikes Not Found" });
+    return c.json({ message: "Motorbikes Not Found" });
   }
 
-  motobikes = motobikes.filter((motobikes) => motobikes.id !== id);
+  motorbikes = motorbikes.filter((motorbikes) => motorbikes.id !== id);
 
-  return c.json(`motobikes number ${id} id deleted`);
+  return c.json(`motorbikes number ${id} id deleted`);
 });
 
-app.put("/motobikes/:id", async (c) => {
+app.put("/motorbikes/:id", async (c) => {
   const id = Number(c.req.param("id"));
-  const motobike = motobikes.find((motobikes) => motobikes.id == id);
+  const motorbike = motorbikes.find((motorbikes) => motorbikes.id == id);
 
-  if (!motobike) {
+  if (!motorbike) {
     c.status(404);
-    return c.json({ message: "Motobikes Not Found" });
+    return c.json({ message: "Motorbike Not Found" });
   }
 
   const body = await c.req.json();
 
-  const newMotobike = {
-    id: motobike.id,
-    name: body.name || motobike.id,
-    merk: body.merk || motobike.merk,
-    cc: body.cc || motobike.cc,
-    type: body.type || motobike.type,
-    transmission: body.transmission || motobike.transmission,
-    price: body.price || motobike.price,
+  const newMotorbike = {
+    id: motorbike.id,
+    name: body.name || motorbike.id,
+    merk: body.merk || motorbike.merk,
+    cc: body.cc || motorbike.cc,
+    type: body.type || motorbike.type,
+    transmission: body.transmission || motorbike.transmission,
+    price: body.price || motorbike.price,
   };
 
-  const updatedMotobikes = motobikes.map((motobike) => {
-    if (id == motobike.id) {
-      return newMotobike;
+  const updatedMotorbikes = motorbikes.map((motorbike) => {
+    if (id == motorbike.id) {
+      return newMotorbike;
     } else {
-      return motobike;
+      return motorbike;
     }
   });
 
-  motobikes = updatedMotobikes;
+  motorbikes = updatedMotorbikes;
 
   return c.json({
-    mesage: `updated motobike with id ${id}`,
-    motobikes: newMotobike,
+    mesage: `updated motorbike with id ${id}`,
+    motorbikes: newMotorbike,
   });
 });
 
