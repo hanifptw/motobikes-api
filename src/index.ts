@@ -111,4 +111,6 @@ app.put("/motorbikes/:id", async (c) => {
   });
 });
 
+console.log("motorbike is running");
+
 export default app;
