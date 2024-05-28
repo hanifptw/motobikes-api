@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 
 import { dataMotorbikes } from "../data/motorbikes";
+import { prisma } from "./lib/db";
 
 let motorbikes = dataMotorbikes;
 
@@ -17,13 +18,15 @@ app.get("/", (c) => {
   return c.text("Database Motorbikes!");
 });
 
-app.get("/motorbikes", (c) => {
+app.get("/motorbikes", async (c) => {
+  const motorbikes = await prisma.motobike.findMany();
   return c.json(motorbikes);
 });
 
-app.get("/motorbikes/:id", (c) => {
+app.get("/motorbikes/:id", async (c) => {
   const id = Number(c.req.param("id"));
-  const motorbike = motorbikes.find((motorbikes) => motorbikes.id == id);
+
+  const motorbike = await prisma.motobike.findUnique({ where: { id } });
 
   if (!motorbike) {
     c.status(404);
@@ -36,78 +39,56 @@ app.get("/motorbikes/:id", (c) => {
 app.post("/motorbikes", async (c) => {
   const body = await c.req.json();
 
-  const nextId = motorbikes[motorbikes.length - 1].id + 1;
-
-  const newMotorbike = {
-    id: nextId,
+  const motorbikeData = {
     name: body.name,
   };
 
-  motorbikes = [...motorbikes, newMotorbike];
+  const motorbike = await prisma.motobike.create({
+    data: motorbikeData,
+  });
 
-  return c.json({ motorbike: newMotorbike });
+  return c.json({ motorbike });
 });
 
-app.delete("/motorbikes", (c) => {
-  motorbikes = [];
+app.delete("/motorbikes", async (c) => {
+  const result = await prisma.motobike.deleteMany();
 
-  return c.json({ motorbikes });
+  return c.json({ messege: "All motorbikes have been removed", result });
 });
 
-app.post("/motorbikes/seeds", (c) => {
-  motorbikes = dataMotorbikes;
+// app.post("/motorbikes/seeds", (c) => {
+//   motorbikes = dataMotorbikes;
 
-  return c.json({ motorbikes });
-});
+//   return c.json({ motorbikes });
+// });
 
-app.delete("/motorbikes/:id", (c) => {
+app.delete("/motorbikes/:id", async (c) => {
   const id = Number(c.req.param("id"));
-  const motorbike = motorbikes.find((motorbikes) => motorbikes.id == id);
 
-  if (!motorbike) {
-    c.status(404);
-    return c.json({ message: "Motorbikes Not Found" });
-  }
+  const deletedMotorbike = await prisma.motobike.delete({ where: { id } });
 
-  motorbikes = motorbikes.filter((motorbikes) => motorbikes.id !== id);
-
-  return c.json(`motorbikes number ${id} id deleted`);
+  return c.json({
+    messege: `Deleted motorbike with id ${id}`,
+    deletedMotorbike,
+  });
 });
 
 app.put("/motorbikes/:id", async (c) => {
   const id = Number(c.req.param("id"));
-  const motorbike = motorbikes.find((motorbikes) => motorbikes.id == id);
-
-  if (!motorbike) {
-    c.status(404);
-    return c.json({ message: "Motorbike Not Found" });
-  }
-
   const body = await c.req.json();
 
-  const newMotorbike = {
-    id: motorbike.id,
-    name: body.name || motorbike.id,
-    merk: body.merk || motorbike.merk,
-    cc: body.cc || motorbike.cc,
-    type: body.type || motorbike.type,
-    transmission: body.transmission || motorbike.transmission,
-    price: body.price || motorbike.price,
+  const motorbikeData = {
+    name: body.name,
   };
 
-  const updatedMotorbikes = motorbikes.map((motorbike) => {
-    if (id == motorbike.id) {
-      return newMotorbike;
-    } else {
-      return motorbike;
-    }
+  const updatedMotorbike = await prisma.motobike.update({
+    where: { id },
+    data: motorbikeData,
   });
-
-  motorbikes = updatedMotorbikes;
 
   return c.json({
     mesage: `updated motorbike with id ${id}`,
-    motorbikes: newMotorbike,
+    motorbikes: updatedMotorbike,
   });
 });
 
