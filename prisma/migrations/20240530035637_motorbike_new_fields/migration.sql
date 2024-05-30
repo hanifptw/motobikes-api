@@ -1,0 +1,8 @@
+-- AlterTable
+ALTER TABLE "Motobike" ADD COLUMN     "brand_id" TEXT,
+ADD COLUMN     "cc" INTEGER,
+ADD COLUMN     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ADD COLUMN     "price" INTEGER,
+ADD COLUMN     "transmission" TEXT,
+ADD COLUMN     "type" TEXT,
+ADD COLUMN     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;

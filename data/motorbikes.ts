@@ -1,18 +1,12 @@
-type Motorbikes = {
-  id: number;
-  name: string;
-  merk?: string;
-  cc?: number;
-  type?: string;
-  transmission?: string;
-  price?: number;
-};
+import { type Motobike } from "@prisma/client";
 
-export const dataMotorbikes: Motorbikes[] = [
+export type DataMotorbikes = Omit<Motobike, "created_at" | "updated_at">;
+
+export const dataMotorbikes: DataMotorbikes[] = [
   {
     id: 1,
     name: "Honda Goldwing",
-    merk: "Honda",
+    brand_id: "Honda",
     type: "Touring",
     cc: 1833,
     transmission: "Automatic",
@@ -21,7 +15,7 @@ export const dataMotorbikes: Motorbikes[] = [
   {
     id: 2,
     name: "Honda CBR1000RR-R",
-    merk: "Honda",
+    brand_id: "Honda",
     type: "Super Sport",
     cc: 1000,
     transmission: "Manual",
@@ -30,7 +24,7 @@ export const dataMotorbikes: Motorbikes[] = [
   {
     id: 3,
     name: "Honda CRF1100L Africa Twin",
-    merk: "Honda",
+    brand_id: "Honda",
     type: "Adventure Touring",
     cc: 1084,
     transmission: "Manual",
@@ -39,7 +33,7 @@ export const dataMotorbikes: Motorbikes[] = [
   {
     id: 4,
     name: "Honda CBR600RR",
-    merk: "Honda",
+    brand_id: "Honda",
     type: "Super Sport",
     cc: 599,
     transmission: "Manual",
@@ -48,7 +42,7 @@ export const dataMotorbikes: Motorbikes[] = [
   {
     id: 5,
     name: "Honda XL750 Transalp",
-    merk: "Honda",
+    brand_id: "Honda",
     type: "Adventure Touring",
     cc: 755,
     transmission: "Manual",
@@ -57,7 +51,7 @@ export const dataMotorbikes: Motorbikes[] = [
   {
     id: 6,
     name: "Honda CB650R",
-    merk: "Honda",
+    brand_id: "Honda",
     type: "Sport",
     cc: 649,
     transmission: "Manual",

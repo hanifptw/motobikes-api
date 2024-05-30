@@ -14,6 +14,13 @@ datasource db {
 }
 
 model Motobike {
-  id      Int      @id @default(autoincrement())
-  name    String  @db.VarChar(255)
-  }
+  id           Int     @id @default(autoincrement())
+  name         String  @db.VarChar(255)
+  brand_id     String?
+  cc           Int?
+  type         String?
+  transmission String?
+  price        Int?
+  created_at   DateTime @default(now())
+  updated_at   DateTime @default(now()) @updatedAt
+}
