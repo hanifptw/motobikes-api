@@ -102,6 +102,6 @@ app.put("/motorbikes/:id", async (c) => {
   });
 });
 
-console.log("motorbike is running");
+console.log({ messege: "motorbike is running" });
 
 export default app;
