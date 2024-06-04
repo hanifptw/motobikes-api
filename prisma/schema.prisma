@@ -13,14 +13,29 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Motobike {
-  id           Int      @id @default(autoincrement())
-  name         String   @db.VarChar(255)
-  brand_id     String?
+model Motorbike {
+  id           Int     @id @default(autoincrement())
+  name         String  @db.VarChar(255)
   cc           Int?
   type         String?
   transmission String?
   price        Int?
-  created_at   DateTime @default(now())
-  updated_at   DateTime @default(now()) @updatedAt
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  Brand   Brand? @relation(fields: [brandId], references: [id])
+  brandId Int?   @default(1)
+}
+
+model Brand {
+  id         Int     @id @default(autoincrement())
+  name       String  @db.VarChar(255)
+  founder    String?
+  headqurter String?
+
+  motorbikes Motorbike[]
+
+  foundedAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }

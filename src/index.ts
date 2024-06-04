@@ -2,6 +2,7 @@ import { Hono } from "hono";
 
 import { dataMotorbikes } from "../data/motorbikes";
 import { prisma } from "./lib/db";
+import { dataBrands } from "../data/brands";
 
 const app = new Hono();
 
@@ -17,14 +18,14 @@ app.get("/", (c) => {
 });
 
 app.get("/motorbikes", async (c) => {
-  const motorbikes = await prisma.motobike.findMany();
+  const motorbikes = await prisma.motorbike.findMany();
   return c.json(motorbikes);
 });
 
 app.get("/motorbikes/:id", async (c) => {
   const id = Number(c.req.param("id"));
 
-  const motorbike = await prisma.motobike.findUnique({ where: { id } });
+  const motorbike = await prisma.motorbike.findUnique({ where: { id } });
 
   if (!motorbike) {
     c.status(404);
@@ -37,30 +38,30 @@ app.get("/motorbikes/:id", async (c) => {
 app.post("/motorbikes", async (c) => {
   const body = await c.req.json();
 
-  const motorbikeData = {
-    name: String(body.name),
-    brand_id: String(body.brand_id),
-    cc: Number(body.cc),
-    type: String(body.type),
-    transmission: String(body.domain),
-    price: Number(body.price),
-  };
+  const motorbike = await prisma.motorbike.create({
+    data: {
+      name: body.name,
 
-  const motorbike = await prisma.motobike.create({
-    data: motorbikeData,
+      cc: body.cc,
+      type: body.type,
+      transmission: body.transmission,
+      price: body.price,
+
+      brandId: body.brandId,
+    },
   });
 
   return c.json({ motorbike });
 });
 
 app.delete("/motorbikes", async (c) => {
-  const result = await prisma.motobike.deleteMany();
+  const result = await prisma.motorbike.deleteMany();
 
   return c.json({ messege: "All motorbikes have been removed", result });
 });
 
-app.post("/motorbikes/seeds", async (c) => {
-  const motorbikes = await prisma.motobike.createMany({
+app.post("/motorbikes/seed", async (c) => {
+  const motorbikes = await prisma.motorbike.createMany({
     data: dataMotorbikes,
   });
 
@@ -70,7 +71,7 @@ app.post("/motorbikes/seeds", async (c) => {
 app.delete("/motorbikes/:id", async (c) => {
   const id = Number(c.req.param("id"));
 
-  const deletedMotorbike = await prisma.motobike.delete({ where: { id } });
+  const deletedMotorbike = await prisma.motorbike.delete({ where: { id } });
 
   return c.json({
     messege: `Deleted motorbike with id ${id}`,
@@ -82,24 +83,35 @@ app.put("/motorbikes/:id", async (c) => {
   const id = Number(c.req.param("id"));
   const body = await c.req.json();
 
-  const motorbikeData = {
-    name: String(body.name),
-    brand_id: String(body.brand_id),
-    cc: Number(body.cc),
-    type: String(body.type),
-    transmission: String(body.domain),
-    price: Number(body.price),
-  };
-
-  const updatedMotorbike = await prisma.motobike.update({
+  const updatedMotorbike = await prisma.motorbike.update({
     where: { id },
-    data: motorbikeData,
+    data: {
+      name: body.name,
+      cc: body.cc,
+      type: body.type,
+      transmission: body.domain,
+      price: body.price,
+      brandId: body.brandId,
+    },
   });
 
   return c.json({
     mesage: `updated motorbike with id ${id}`,
     motorbikes: updatedMotorbike,
   });
+});
+
+app.post("/brands/seed", async (c) => {
+  const brands = await prisma.brand.createMany({
+    data: dataBrands,
+  });
+
+  return c.json({ brands });
+});
+
+app.get("/brands", async (c) => {
+  const brands = await prisma.brand.findMany();
+  return c.json(brands);
 });
 
 console.log({ messege: "motorbike is running" });
