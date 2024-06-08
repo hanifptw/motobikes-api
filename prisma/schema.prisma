@@ -32,7 +32,7 @@ model Brand {
   id         Int     @id @default(autoincrement())
   name       String  @db.VarChar(255)
   founder    String?
-  headqurter String?
+  headquarter String?
 
   motorbikes Motorbike[]
 
